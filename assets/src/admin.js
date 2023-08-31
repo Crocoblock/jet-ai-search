@@ -166,7 +166,7 @@ class App extends Component {
 					/>
 					<RangeControl
 						label="Strictness"
-						help="0 - is most 'strict' results, 1 - most 'gentle'"
+						help="0 - is most 'strict' results, 1 - most 'gentle'. For lower values there are more chances AI search will returns empty results."
 						max={ 1 }
 						min={ 0 }
 						step={ 0.01 }
