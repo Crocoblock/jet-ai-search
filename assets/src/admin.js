@@ -36,6 +36,7 @@ class App extends Component {
 					api_key: this.state.api_key,
 					mode: this.state.mode,
 					strictness: this.state.strictness,
+					limit: this.state.limit,
 				},
 			}
 		} ).then( ( response ) => {
@@ -172,6 +173,18 @@ class App extends Component {
 						value={ this.state.strictness }
 						onChange={ ( value ) => {
 							this.setState( { strictness: value } );
+						} }
+					/>
+					<TextControl
+						label="Results Limit"
+						help="AI search at the moment can`t handle pagination. So you need to set max limit of results AI search will return."
+						max={ 100 }
+						min={ 1 }
+						type="number"
+						step={ 1 }
+						value={ this.state.limit }
+						onChange={ ( value ) => {
+							this.setState( { limit: parseInt( value, 10 ) } );
 						} }
 					/>
 				</CardBody>

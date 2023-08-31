@@ -49,6 +49,10 @@ class Handle_Search {
 
 	public function get_results( $search = '' ) {
 
+		if ( ! Plugin::instance()->settings->get( 'api_key' ) ) {
+			return false;
+		}
+
 		if ( ! $search ) {
 			return false;
 		}
@@ -89,7 +93,7 @@ class Handle_Search {
 		} );
 
 		$result_ids = [];
-		$limit      = 10;
+		$limit      = Plugin::instance()->settings->get( 'limit' );
 
 		for ( $i = 0; $i < count( $search_results ); $i++ ) {
 

@@ -16,7 +16,8 @@ class Settings {
 	private $defaults = [
 		'api_key'    => '',
 		'mode'       => 'all',
-		'strictness' => 0.65,
+		'strictness' => 0.7,
+		'limit'      => 10,
 	];
 
 	public function get( $setting = '' ) {
