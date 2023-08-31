@@ -1,0 +1,33 @@
+.jet-apb-integration {
+	margin: 0 0 30px;
+	border: 2px solid #ECECEC;
+	border-radius: 4px;
+}
+
+.jet-apb-integration-component {
+	border-top: 2px solid #ECECEC;
+	.cx-vui-component {
+		padding-top: 15px;
+		padding-bottom: 10px;
+		&.cx-vui-component--error {
+			border: 1px solid #C92C2C;
+			color: #C92C2C;
+			padding: 20px;
+			margin: 15px 20px;
+			.cx-vui-component__label,
+			.cx-vui-component__desc {
+				color: #C92C2C;
+			}
+		}
+	}
+	.validatation-result {
+		padding: 10px 0 0 0;
+		&--success {
+			color: #46B450;
+		}
+		&--error {
+			color: #C92C2C;
+		}
+	}
+}
+

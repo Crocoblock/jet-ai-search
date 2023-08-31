@@ -1,0 +1,171 @@
+#jet-apb-custom-schedule-meta-box{
+	.jet-apb-schedule-settings{
+		padding: 0 20px;
+		.cx-vui-component{
+			max-width: 100%;
+		}
+	}
+}
+
+#normal-sortables{
+	#schedule_meta_box,
+	[id^="jet-engine-cpt"]{
+		.hndle.ui-sortable-handle{
+			border-bottom: none;
+		}
+	}
+}
+
+.jet-wc-checkout-fields{
+	display: flex;
+	flex-wrap: wrap;
+	-webkit-box-pack: justify;
+	justify-content: space-between;
+	padding-left: 20px;
+	-webkit-box-flex: 0;
+	flex: 0 0 calc( 100% - 250px );
+	.jet-form-editor__row-map{
+		-webkit-box-flex: 0;
+		-ms-flex: 0 0 30%;
+		flex: 0 0 30%;
+		select{
+			width: initial;
+		}
+	}
+}
+
+.jet-apb-popup {
+	display: none;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0,0,0,.8);
+	justify-content: center;
+	align-items: center;
+	&--active {
+		display: flex;
+		position: fixed;
+		z-index: 9999;
+	}
+	&__overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+	}
+	&__body {
+		box-sizing: border-box;
+		width: 600px;
+		max-width: 90vw;
+		background: #fff;
+		position: relative;
+		z-index: 2;
+	}
+	&__header {
+		padding: 20px 30px;
+		border-bottom: 1px solid #e2e4e7;
+		background: #f3f4f5;
+		h3 {
+			margin: 0;
+		}
+	}
+	&__content {
+		padding: 0 30px 15px;
+		overflow-y: auto;
+		max-height: 600px;
+	}
+}
+
+.jet-apb-popup-actions {
+	padding: 15px 30px;
+	border-top: 1px solid #e2e4e7;
+	display: flex;
+	align-items: center;
+	button.button-link {
+		margin: 0 0 0 15px;
+		color: #b52727;
+	}
+}
+
+.jet-apb-wc-details {
+	padding: 0 0 12px;
+	&__item {
+		position: relative;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		padding: 15px 30px 15px 60px;
+		margin: 0 -30px;
+		border-bottom: 1px solid #e2e4e7;
+		input[type="number"] {
+			width: 80px;
+			margin: 0;
+		}
+	}
+	&__inner-col {
+		display: flex;
+		justify-content: space-between;
+		input[type="text"] {
+			width: 48%;
+			margin: 0;
+		}
+	}
+	&__col {
+		padding: 0 10px 0 0;
+		box-sizing: border-box;
+		&:last-child {
+			padding: 0;
+		}
+		label {
+			display: block;
+			margin: 0 0 5px;
+		}
+		select,
+		input {
+			width: 100%;
+			margin: 0;
+		}
+		&.col-type,
+		&.col-label,
+		&.col-format,
+		&.col-placeholder {
+			flex: 0 0 31%;
+		}
+		&.col-delete {
+			flex: 0 0 7%;
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-end;
+			align-self: flex-start;
+			margin: 20px 0 0 0;
+			.dashicons {
+				padding: 5px;
+				cursor: pointer;
+				opacity: 0.4;
+				&:hover {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}
+
+.jet-apb-wc-details-nav {
+	width: 30px;
+	position: absolute;
+	left: 21px;
+	top: 34px;
+	span {
+		display: block;
+		width: 33px;
+		text-align: center;
+		cursor: pointer;
+		opacity: 0.4;
+		&:hover {
+			opacity: 1;
+		}
+	}
+}

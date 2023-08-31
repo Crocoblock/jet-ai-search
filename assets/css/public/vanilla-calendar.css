@@ -1,0 +1,237 @@
+.appointment-provider {
+	position: relative;
+}
+
+.appointment-provider__loader {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba( 255, 255, 255, .4 );
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.appointment-provider__loader-hidden {
+	display: none;
+}
+
+.jet-apb-calendar *, .jet-apb-calendar *:before, .jet-apb-calendar *:after {
+	box-sizing: border-box;
+}
+
+.jet-apb-calendar {
+	position: relative;
+}
+
+.jet-apb-calendar .jet-apb-calendar-content {
+	width: 350px;
+	min-width: 350px;
+	flex: 0 0 350px;
+	position: relative;
+}
+
+.jet-apb-calendar .jet-apb-calendar-notification {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #fff;
+	z-index: 100;
+}
+.jet-apb-calendar .jet-apb-calendar-notification > * {
+	display: none;
+}
+.jet-apb-calendar .jet-apb-calendar-notification.notification-max-slots .jet-apb-calendar-notification-max-slots,
+.jet-apb-calendar .jet-apb-calendar-notification.notification-service .jet-apb-calendar-notification-service,
+.jet-apb-calendar .jet-apb-calendar-notification.notification-provider .jet-apb-calendar-notification-provider,
+.jet-apb-calendar .jet-apb-calendar-notification.notification-service-field .jet-apb-calendar-notification-service-field {
+	display: block;
+}
+
+.jet-apb-calendar-wrapper .jet-apb-calendar-appointments-list-wrapper{
+	flex-direction: column;
+}
+.jet-apb-calendar-appointments-list{
+	padding: 12px 50px;
+}
+.jet-apb-appointments-item{
+	position: relative;
+	margin-bottom: 29px;
+}
+.jet-apb-appointments-item > div{
+	margin-bottom: 14px;
+}
+.jet-apb-appointments-item .jet-apb-item-service-provider{
+	font-weight: 700;
+}
+.jet-apb-calendar-slot__delete{
+	position: absolute;
+	top: 4px;
+	right: -1px;
+	width: 14px;
+	height: 14px;
+	cursor: pointer;
+}
+.jet-apb-calendar-slot__delete svg{
+	pointer-events: none;
+}
+
+.jet-apb-calendar--loading {
+	opacity: .6;
+}
+
+@media (max-width:1200px) {
+	.jet-apb-calendar {
+		width: auto;
+	}
+}
+.jet-apb-calendar .jet-apb-calendar-btn {
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-appearance: none;
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	line-height: normal;
+	min-width: 27px;
+	outline: none;
+	overflow: visible;
+	padding: 0;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.jet-apb-calendar .jet-apb-calendar-header {
+	align-items: center;
+	justify-content: space-between;
+	display: flex;
+	padding: 10px;
+}
+
+.jet-apb-calendar .jet-apb-calendar-header svg {
+	fill: currentColor;
+}
+
+.jet-apb-calendar .jet-apb-calendar-header__label {
+	text-align: center;
+	width: 100%;
+}
+
+.jet-apb-calendar .jet-apb-calendar-week {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.jet-apb-calendar .jet-apb-calendar-week span {
+	flex-direction: column;
+	flex: 0 0 14.28%;
+	font-size: 1em;
+	max-width: 14.28%;
+	padding: 15px 0px;
+	text-align: center;
+}
+
+.jet-apb-calendar .jet-apb-calendar-body {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.jet-apb-calendar .jet-apb-calendar-date {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 14.28%;
+	max-width: 14.28%;
+	cursor: pointer;
+}
+
+.jet-apb-calendar .jet-apb-calendar-slots {
+	flex: 0 0 100%;
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.jet-apb-calendar .jet-apb-calendar-slots.jet-apb-calendar-slots--active,
+.jet-apb-calendar .jet-apb-calendar-slots.jet-apb-calendar-slots--active .jet-apb-calendar-slots {
+	padding: 15px 0;
+}
+
+.jet-apb-calendar .jet-apb-calendar-slots .jet-apb-calendar-slots-container {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 0 30px 0 0;
+}
+
+.jet-apb-calendar .jet-apb-calendar-slots.jet-apb-calendar-type-range {
+	display: block;
+}
+.jet-apb-time-picker-control {
+	width: 100%;
+}
+
+.jet-apb-calendar .jet-apb-calendar-slots.jet-apb-calendar-type-range .jet-apb-time-picker-wrapper{
+	display: flex;
+	align-items: center;
+	margin: 10px 0;
+	width: 100%;
+}
+.jet-apb-calendar .jet-apb-calendar-slots.jet-apb-calendar-type-range .jet-apb-time-picker-wrapper label,
+.jet-apb-calendar .jet-apb-calendar-slots .jet-apb-hours-label {
+	flex: 0 1 35%;
+}
+.jet-apb-calendar .jet-apb-calendar-slots.jet-apb-calendar-type-range .jet-apb-time-picker-wrapper #jet-apb-time-picker-start,
+.jet-apb-calendar .jet-apb-calendar-slots .jet-apb-hours-value, .jet-apb-time-picker-control .jet-apb-time-picker-input {
+	flex: 0 1 65%;
+}
+.jet-apb-calendar .jet-apb-calendar-slots .jet-apb-slot {
+	margin: 5px 10px 5px 0;
+}
+.jet-apb-calendar .jet-apb-calendar-slots .jet-apb-app-hours {
+	margin-bottom: 10px;
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+	width: 100%;
+}
+.jet-apb-calendar-slots__close {
+	position: absolute;
+	z-index: 1;
+	right: 10px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 35px;
+	line-height: 35px;
+	font-weight: normal !important;
+}
+
+.jet-apb-calendar .jet-apb-calendar-date--active {
+	cursor: pointer;
+}
+
+.jet-apb-calendar-date-body {
+	width: 100%;
+	text-align: center;
+}
+
+.jet-apb-calendar .jet-apb-calendar-date--disabled .jet-apb-calendar-date-body {
+	border-radius: 0;
+	cursor: not-allowed;
+	opacity: 0.4;
+	text-decoration: line-through;
+}
+
+.jet-apb-slot {
+	cursor: pointer;
+}

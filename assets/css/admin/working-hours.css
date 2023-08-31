@@ -1,0 +1,149 @@
+.jet-apb-schedule-settings .cx-vui-component {
+  padding: 15px 0;
+}
+.jet-apb-schedule-settings .cx-vui-popup .cx-vui-popup__body .cx-vui-popup__header {
+  margin-bottom: 0;
+}
+.jet-apb-schedule-settings .jet-apb-day-custom-schedule > .cx-vui-component__meta {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  margin: 0 0 5px;
+  border: none;
+}
+.jet-apb-schedule-settings .jet-apb-day-custom-schedule > .cx-vui-component__meta .cx-vui-component__label {
+  padding: 0;
+}
+.jet-apb-schedule-settings .jet-apb-day-custom-schedule .jet-apb-custom-day__slot {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 6px 5px 0;
+}
+.jet-apb-schedule-settings .jet-apb-day-custom-schedule .jet-apb-custom-day__slot-time {
+  display: flex;
+  align-items: center;
+}
+.jet-apb-schedule-settings .jet-apb-day-custom-schedule .jet-apb-custom-day__slot-time > span {
+  padding: 0 10px;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 0 10px;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__columns {
+  max-width: calc(50% - 20px);
+  flex: 0 0 calc(50% - 20px);
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0 20px;
+  min-height: 32px;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__body {
+  margin-bottom: 35px;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__paired-controls .cx-vui-component__control {
+  display: flex;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__paired-controls .cx-vui-component__control .cx-vui-component {
+  padding: 0;
+  border-top: none;
+  flex-direction: column;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__paired-controls .cx-vui-component__control .cx-vui-component:first-child {
+  margin-right: 20px;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__multi_booking .cx-vui-component {
+  flex-direction: column;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__multi_booking .cx-vui-component > div {
+  max-width: 100%;
+  flex: 0 1 100%;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions {
+  display: flex;
+  align-items: center;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions .dashicons-edit {
+  margin: 0 5px 0 0;
+  cursor: pointer;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions .dashicons-edit:hover {
+  color: #23282d;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions .dashicons-trash {
+  cursor: pointer;
+  color: #C92C2C;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions .dashicons-trash:hover {
+  color: #23282d;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions .cx-vui-tooltip {
+  left: 50%;
+  width: 110px;
+  box-sizing: border-box;
+  margin-left: -55px;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours__slot-actions .cx-vui-tooltip span {
+  cursor: pointer;
+}
+.jet-apb-schedule-settings .jet-apb-working-hours .cx-vui-popup .cx-vui-popup__content .cx-vui-component {
+  padding: 20px 0;
+}
+.jet-apb-schedule-settings .jet-apb-week-day {
+  margin: 0 0 20px;
+  border: 2px solid #ECECEC;
+  border-radius: 4px;
+  padding: 10px 10px 10px 15px;
+}
+.jet-apb-schedule-settings .jet-apb-week-day__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.jet-apb-schedule-settings .jet-apb-week-day__head-name {
+  font-size: 15px;
+  line-height: 20px;
+  color: #23282d;
+  font-weight: 500;
+}
+.jet-apb-schedule-settings .jet-apb-week-day__slot {
+  padding: 9px 0 0 0;
+  margin: 10px 0 0 0;
+  color: #7B7E81;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #ECECEC;
+}
+.jet-apb-schedule-settings .jet-apb-week-day__slot-name {
+  line-height: 20px;
+}
+.jet-apb-schedule-settings .jet-apb-days-schedule__slot {
+  border: 2px solid #ECECEC;
+  border-radius: 4px;
+  padding: 15px;
+  color: #7B7E81;
+  font-size: 15px;
+  margin: 0 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.jet-apb-schedule-settings .jet-apb-days-schedule .cx-vui-collapse:first-child .cx-vui-collapse__heading {
+  padding-top: 0;
+}
+.jet-apb-schedule-settings .jet-apb-days-schedule .cx-vui-collapse__content .cx-vui-panel {
+  box-shadow: none;
+}
+.jet-apb-schedule-settings .jet-apb-days-schedule .cx-vui-button {
+  white-space: nowrap;
+}
+
+.wp-admin select.cx-vui-select {
+  padding-right: 24px;
+}

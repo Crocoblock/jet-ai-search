@@ -1,0 +1,168 @@
+.woocommerce{
+	#order_review, .woocommerce-cart-form{
+		.variation{
+			dd.variation-AppointmentInformation, dt.variation-AppointmentInformation{
+				margin: 10px 0 3px;
+				display: inline-block;
+			}
+			dd, dt{
+				text-transform: capitalize;
+			}
+		}
+	}
+	.woocommerce-order{
+		ul.woocommerce-thankyou-order-details.order_details{
+			margin: 0 0 1em;
+			li{
+				float: none;
+				font-size: 0.8em;
+				strong{
+					display: initial;
+				}
+			}
+		}
+	}
+}
+
+.jet-apb-calendar-wrapper {
+	flex: 1 1 auto;
+}
+
+.jet-apb-calendar.jet-apb-calendar-layout {
+	&--sidebar_slots {
+		display: flex;
+		width: 100%;
+		@media ( max-width: 650px ) {
+			flex-direction: column;
+			.jet-apb-calendar-content {
+				flex: 0 0 auto;
+			}
+		}
+	}
+}
+
+.jet-apb-calendar-sidebar {
+	padding: 0 0 0 30px;
+}
+
+.jet-ab-timezone-picker {
+	flex: 0 0 100%;
+	width: 100%;
+	position: relative;
+	margin: 10px 0;
+	&__icon {
+		position: absolute;
+		width: 16px;
+		height: 16px;
+		left: 9px;
+		top: 50%;
+		margin: -10px 0 0;
+		z-index: 999;
+		svg {
+			width: 100%;
+			height: auto;
+			path {
+				fill: currentColor;
+			}
+		}
+	}
+	.choices__inner {
+		padding-left: 28px;
+	}
+	.choices[data-type*=select-one] .choices__input {
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+	> svg {
+
+	}
+}
+
+.jet-apb-recurrence-app-settings{
+	.jet-apb-recurrence-type{
+		margin: 5px 0;
+	}
+	.jet-apb__week-days{
+
+	}
+	.jet-apb__week-day{
+		margin:4px;
+		input{
+			display: none;
+			visibility: hidden;
+			&:checked + span{
+
+			}
+		}
+		>span{
+			background-color:#EFEFEF;
+			border-radius:4px;
+			border:1px solid #D0D0D0;
+			overflow:auto;
+			min-width: 36px;
+			min-height: 36px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+		}
+		>span:hover, >input:checked + span{
+			background-color: #0A3380;
+			border-color: #0A3380;
+			color: #FFFFFF;
+		}
+		&.week-day-disabled{
+			>span{
+				opacity: 0.5;
+			}
+		}
+	}
+}
+
+.jet-apb-switcher{
+	margin: 6px;
+	&__input{
+		visibility: hidden;
+		display: none;
+	}
+	label{
+		display: flex;
+		align-items: center;
+	}
+	&__wrapper{
+		display: block;
+		margin: -5px 5px 0;
+		width: 36px;
+		position: relative;
+		cursor: pointer;
+		padding: 3px  0;
+	}
+	&__panel{
+		display: block;
+		width: 100%;
+		height: 12px;
+		border-radius: 6px;
+		background: #ececec;
+	}
+	&__trigger{
+		display: block;
+		background: #fff;
+		width: 18px;
+		height: 18px;
+		left: 0;
+		top: 50%;
+		margin-top: -9px;
+		box-shadow: 0 1px 4px #23282d3d;
+		transition: all .15s linear;
+		border-radius: 100%;
+		position: absolute;
+	}
+	&__input:checked ~ &__panel{
+		background: #cce5f1;
+	}
+	&__input:checked ~ &__trigger{
+		background: #007cba;
+		left: calc(100% - 18px);
+	}
+}
