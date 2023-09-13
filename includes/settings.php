@@ -18,6 +18,7 @@ class Settings {
 		'mode'       => 'all',
 		'strictness' => 0.7,
 		'limit'      => 10,
+		'auto_fetch' => [],
 	];
 
 	public function get( $setting = '' ) {

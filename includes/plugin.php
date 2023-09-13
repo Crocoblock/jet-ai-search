@@ -50,6 +50,10 @@ class Plugin {
 
 		$this->admin_page->register();
 
+		add_action( 'init', function() {
+			new Auto_Fetch( $this->settings->get( 'auto_fetch' ) );
+		} );
+
 	}
 
 	/**

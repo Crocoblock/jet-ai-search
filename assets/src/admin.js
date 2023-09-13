@@ -6,8 +6,11 @@ const {
 	__experimentalHeading: Heading,
 	Button,
 	TextControl,
+	ToggleControl,
 	SelectControl,
-	RangeControl
+	RangeControl,
+	FlexBlock,
+	Flex
 } = wp.components;
 
 const {
@@ -37,6 +40,7 @@ class App extends Component {
 					mode: this.state.mode,
 					strictness: this.state.strictness,
 					limit: this.state.limit,
+					auto_fetch: this.state.auto_fetch,
 				},
 			}
 		} ).then( ( response ) => {
@@ -108,6 +112,36 @@ class App extends Component {
 		} else {
 			return 'Update Settings';
 		}
+	}
+
+	isAutoFetchEnabled( postType ) {
+		return this.state.auto_fetch.length && this.state.auto_fetch.includes( postType );
+	}
+
+	swithAutoFetch( postType ) {
+		
+		postType = postType || false;
+		const newAutoFetch = [ ...this.state.auto_fetch ];
+		const postTypes = [];
+
+		if ( postType ) {
+			postTypes.push( postType );
+		} else {
+			for ( var i = 0; i < this.props.postTypes.length; i++ ) {
+				postTypes.push( this.props.postTypes[ i ].value );
+			}
+		}
+
+		for( var i = 0, length1 = postTypes.length; i < length1; i++ ) {
+			if ( this.isAutoFetchEnabled( postTypes[i] ) ) {
+				newAutoFetch.splice( newAutoFetch.indexOf( postTypes[i] ), 0 );
+			} else {
+				newAutoFetch.push( postTypes[i] );
+			}
+		}
+
+		this.setState( { auto_fetch: newAutoFetch } );
+
 	}
 
 	modeDesc() {
@@ -196,67 +230,97 @@ class App extends Component {
 					>{ this.saveButtonLabel() }</Button>
 				</CardFooter>
 			</Card>
-			<Card
-				style={ { margin: "0 0 20px" } }
+			<Flex
+				gap="20px"
+				align="stretch"
 			>
-				<CardHeader>
-					<Heading level={ 3 }>Fetched Content Statistics</Heading>
-				</CardHeader>
-				<CardBody>
-					{ ! this.props.stats.length && <div>
-						You not fetched any content yet.
-					</div> }
-					{ this.props.stats.length && <ul>
-						{ this.props.stats.map( ( item ) => {
-							return <li>
-								{ item.label } - { item.fetched }/{ item.total }
-							</li> 
-						} ) }
-					</ul> }
-				</CardBody>
-				<CardFooter>
-					<Button
-						variant="secondary"
-						isDestructive={ true }
-						onClick={ () => {
-							if ( confirm( 'Are you sure?' ) ) {
-								this.clearData();
-							}
-						} }
-					>Clear Fetched Content</Button>
-				</CardFooter>
-			</Card>
-			<Card>
-				<CardHeader>
-					<Heading level={ 3 }>Fetch Content</Heading>
-				</CardHeader>
-				<CardBody>
-					{ ! this.state.api_key && <div>
-						Please set your Open AI API Key to fetch the content.
-					</div> }
-					{ this.state.api_key && <div>
-						<SelectControl
-							label="Select Post Type to fetch data from"
-							options={ this.props.postTypes }
-							value={ this.state.fetch_post_type }
-							onChange={ ( value ) => {
-								this.setState( { fetch_post_type: value } );
-							} }
-							help="Already fetched posts will be rewritten with new"
-						/>
-					</div> }
-				</CardBody>
-				<CardFooter>
-					<Button
-						variant="primary"
-						disabled={ ! this.state.api_key || this.state.fetching }
-						onClick={ () => { this.fetchContent(); } }
-					>{ this.fetchButtonLabel() }</Button>
-					{ this.state.fetching && <div>
-						{ this.state.done } / { this.state.total }
-					</div> }
-				</CardFooter>
-			</Card>
+				<FlexBlock>
+					<Card>
+						<CardHeader>
+							<Heading level={ 3 }>Fetched Content Statistics</Heading>
+						</CardHeader>
+						<CardBody>
+							{ ! this.props.stats.length && <div>
+								You not fetched any content yet.
+							</div> }
+							{ this.props.stats.length && <ul style={ { margin: 0 } }>
+								{ this.props.stats.map( ( item ) => {
+									return <li style={ { padding: '3px 0' } }>
+										{ item.label } - { item.fetched }/{ item.total }
+									</li> 
+								} ) }
+							</ul> }
+						</CardBody>
+						<CardFooter>
+							<Button
+								variant="secondary"
+								isDestructive={ true }
+								onClick={ () => {
+									if ( confirm( 'Are you sure?' ) ) {
+										this.clearData();
+									}
+								} }
+							>Clear Fetched Content</Button>
+						</CardFooter>
+					</Card>
+				</FlexBlock>
+				<FlexBlock>
+					<Card>
+						<CardHeader>
+							<Heading level={ 3 }>Auto-Fetch</Heading>
+						</CardHeader>
+						<CardBody>
+							{ this.props.postTypes.map( ( postType ) => {
+								return <ToggleControl
+									checked={ this.isAutoFetchEnabled( postType.value ) }
+									label={ postType.label }
+									onChange={ () => this.swithAutoFetch( postType.value ) }
+								/>
+							} ) }
+						</CardBody>
+						<CardFooter>
+							<Button
+								variant="primary"
+								onClick={ () => { this.saveOptions() } }
+								disabled={ this.state.saving }
+							>{ this.saveButtonLabel() }</Button>
+						</CardFooter>
+					</Card>
+				</FlexBlock>
+				<FlexBlock>
+					<Card>
+						<CardHeader>
+							<Heading level={ 3 }>Fetch Content</Heading>
+						</CardHeader>
+						<CardBody>
+							{ ! this.state.api_key && <div>
+								Please set your Open AI API Key to fetch the content.
+							</div> }
+							{ this.state.api_key && <div>
+								<SelectControl
+									label="Select Post Type to fetch data from"
+									options={ this.props.postTypes }
+									value={ this.state.fetch_post_type }
+									onChange={ ( value ) => {
+										this.setState( { fetch_post_type: value } );
+									} }
+									help="Already fetched posts will be rewritten with new"
+								/>
+							</div> }
+						</CardBody>
+						<CardFooter>
+							<Button
+								variant="primary"
+								disabled={ ! this.state.api_key || this.state.fetching }
+								onClick={ () => { this.fetchContent(); } }
+							>{ this.fetchButtonLabel() }</Button>
+							{ this.state.fetching && <div>
+								{ this.state.done } / { this.state.total }
+							</div> }
+						</CardFooter>
+					</Card>
+				</FlexBlock>
+			</Flex>
 		</div> );
 	}
 

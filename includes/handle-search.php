@@ -37,17 +37,25 @@ class Handle_Search {
 			return;
 		}
 
-		$search     = $query->get( 's' );
-		$result_ids = $this->get_results( $search );
+		$search            = $query->get( 's' );
+		$post_type         = false;
+		$queried_post_type = $query->get( 'post_type' );
+
+		if ( ! empty( $queried_post_type ) && 'any' !== $queried_post_type ) {
+			$post_type = is_array( $queried_post_type ) ? $queried_post_type : [ $queried_post_type ];
+		}
+
+		$result_ids = $this->get_results( $search, $post_type );
 
 		if ( ! empty( $result_ids ) ) {
 			$query->set( 'post__in', $result_ids );
+			$query->set( 'orderby', 'post__in' );
 			add_filter( 'posts_search', [ $this, 'clear_search_sql' ] );
 		}
 
 	}
 
-	public function get_results( $search = '' ) {
+	public function get_results( $search = '', $sources = false ) {
 
 		if ( ! Plugin::instance()->settings->get( 'api_key' ) ) {
 			return false;
@@ -57,9 +65,26 @@ class Handle_Search {
 			return false;
 		}
 		
-		$table      = Plugin::instance()->db->table();
-		$embeddings = Plugin::instance()->db->wpdb()->get_results( "SELECT ID, post_id, embedding FROM $table" );
-		$open_ai    = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
+		$table = Plugin::instance()->db->table();
+		$where = '';
+
+		if ( ! empty( $sources ) ) {
+			$sources_str = [];
+			foreach ( $sources as $source ) {
+				$sources_str[] = "'$source'";
+			}
+
+			$sources_str = implode( ', ', $sources_str );
+
+			$where .= "WHERE `source` IN ($sources_str)";
+
+		}
+
+		$embeddings = Plugin::instance()->db->wpdb()->get_results( 
+			"SELECT ID, post_id, embedding FROM $table $where"
+		);
+
+		$open_ai = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
 
 		$query_result = $open_ai->request( 'embeddings', json_encode( [
 			'model' => 'text-embedding-ada-002',

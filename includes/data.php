@@ -69,6 +69,48 @@ class Data {
 
 	}
 
+	public function fetch_post( $post ) {
+
+		$post_parser = new Post_Parser();
+
+		$GLOBALS['post'] = $post;
+		setup_postdata( $post );
+		$post_content = apply_filters( 'the_content', $post->post_content );
+		Plugin::instance()->db->delete( [ 'post_id' => $post->ID ] );
+		
+		return $post_parser->get_post_fragments( 
+			$post->ID, 
+			$post->post_title, 
+			$post->guid,
+			$post_content,
+			$post->post_type,
+		);
+
+	}
+
+	public function write_embeddings( $embeddings = [] ) {
+		
+		Plugin::instance()->db->create_table();
+
+		$open_ai = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
+
+		$result = $open_ai->request( 'embeddings', json_encode( [
+			'model' => 'text-embedding-ada-002',
+			'input' => array_map( function( $item ) {
+				return $item['fragment'];
+			}, $embeddings ),
+		] ) );
+
+		if ( ! empty( $result['data'] ) ) {
+			foreach ( $result['data'] as $index => $item ) {
+				$result_embeddings[] = $item['embedding'];
+				$embeddings[ $index ]['embedding'] = json_encode( $item['embedding'] );
+				Plugin::instance()->db->insert( $embeddings[ $index ] );
+			}
+		}
+
+	}
+
 	public function dispatch_fetch( $request, $dispatcher ) {
 
 		if ( ! $dispatcher->verify_nonce( $request ) ) {
@@ -100,44 +142,15 @@ class Data {
 			'posts_per_page' => $per_chunk,
 		] );
 
-		Plugin::instance()->db->create_table();
-
 		$embeddings = [];
 		$done = $per_chunk * ( $chunk - 1 );
-		$post_parser = new Post_Parser();
 
 		foreach ( $posts as $post ) {
-			$GLOBALS['post'] = $post;
-			setup_postdata( $post );
-			$post_content = apply_filters( 'the_content', $post->post_content );
-			Plugin::instance()->db->delete( [ 'post_id' => $post->ID ] );
-			$embeddings = array_merge( $embeddings, $post_parser->get_post_fragments( 
-				$post->ID, 
-				$post->post_title, 
-				$post->guid,
-				$post_content,
-				$request['post_type'],
-			) );
-		
+			$embeddings = array_merge( $embeddings, $this->fetch_post( $post ) );
 			$done++;
 		}
 
-		$open_ai = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
-		
-		$result = $open_ai->request( 'embeddings', json_encode( [
-			'model' => 'text-embedding-ada-002',
-			'input' => array_map( function( $item ) {
-				return $item['fragment'];
-			}, $embeddings ),
-		] ) );
-
-		if ( ! empty( $result['data'] ) ) {
-			foreach ( $result['data'] as $index => $item ) {
-				$result_embeddings[] = $item['embedding'];
-				$embeddings[ $index ]['embedding'] = json_encode( $item['embedding'] );
-				Plugin::instance()->db->insert( $embeddings[ $index ] );
-			}
-		}
+		$this->write_embeddings( $embeddings );
 
 		wp_send_json_success( [
 			'done'     => $done,
