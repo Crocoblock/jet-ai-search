@@ -134,7 +134,7 @@ class App extends Component {
 
 		for( var i = 0, length1 = postTypes.length; i < length1; i++ ) {
 			if ( this.isAutoFetchEnabled( postTypes[i] ) ) {
-				newAutoFetch.splice( newAutoFetch.indexOf( postTypes[i] ), 0 );
+				newAutoFetch.splice( newAutoFetch.indexOf( postTypes[i] ), 1 );
 			} else {
 				newAutoFetch.push( postTypes[i] );
 			}
