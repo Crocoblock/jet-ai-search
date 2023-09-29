@@ -14,6 +14,7 @@ class Post_Parser {
 	private $strip_tags = false;
 	private $result = [];
 	private $defaults = [];
+	private $source = '';
 
 	public function set_stack_defaults( $defaults = [] ) {
 		$this->defaults = array_merge( [ 'source' => $this->source ], $defaults );
