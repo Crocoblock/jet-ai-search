@@ -20,8 +20,10 @@ class Post_Parser {
 		$this->defaults = array_merge( [ 'source' => $this->source ], $defaults );
 	}
 
-	public function stack_result( $item = [] ) {
-		if ( ! empty( $item['fragment'] ) && $this->is_valid_fragment( $item['fragment'] ) ) {
+	public function stack_result( $item = [], $force_stack = false ) {
+		if ( ! empty( $item['fragment'] ) 
+			&& ( $force_stack || $this->is_valid_fragment( $item['fragment'] ) )
+		) {
 			$this->result[] = array_merge( $this->defaults, $item );
 			//var_dump( $item );
 		}
@@ -43,8 +45,8 @@ class Post_Parser {
 
 		$this->set_stack_defaults( [
 			'post_id'    => $ID,
-			'post_url'   => $title,
-			'post_title' => $link,
+			'post_url'   => $link,
+			'post_title' => $title,
 			'source'     => $type,
 		] );
 
@@ -143,6 +145,10 @@ class Post_Parser {
 
 		return $this->result;
 
+	}
+
+	public function get_result() {
+		return $this->result;
 	}
 
 	public function is_valid_fragment( $fragment ) {

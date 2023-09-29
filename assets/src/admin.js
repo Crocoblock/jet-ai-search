@@ -28,11 +28,15 @@ class App extends Component {
 
 	}
 
+	ajaxURL() {
+		return window.ajaxurl + '?action=jet_ai_search_dispatch&nonce=' + window.JetAISearchData.nonce;
+	}
+
 	saveOptions() {
 		this.setState( { saving: true } );
 		wp.apiFetch( {
 			method: 'POST',
-			url: window.ajaxurl + '?action=jet_ai_search_dispatch',
+			url: this.ajaxURL(),
 			data: {
 				dispatch: 'settings.dispatch_update',
 				settings: {
@@ -44,20 +48,34 @@ class App extends Component {
 				},
 			}
 		} ).then( ( response ) => {
+
 			this.setState( { saving: false } );
+
+			if ( ! response.success ) {
+				alert( response.data );
+			}
+
 		} ).catch( ( error ) => {
 			this.setState( { saving: false } );
+			alert( error );
 		} );
 	}
 
 	clearData() {
 		wp.apiFetch( {
 			method: 'POST',
-			url: window.ajaxurl + '?action=jet_ai_search_dispatch',
+			url: this.ajaxURL(),
 			data: {
-				dispatch: 'data.dispatch_clear'
+				dispatch: 'data.dispatch_clear',
+				nonce: window.JetAISearchData.nonce,
 			}
 		} ).then( ( response ) => {
+			
+			if ( ! response.success ) {
+				alert( response.data );
+				return;
+			}
+
 			window.location.reload();
 		} );
 	}
@@ -65,9 +83,10 @@ class App extends Component {
 	fetchChunk( chunk ) {
 		wp.apiFetch( {
 			method: 'POST',
-			url: window.ajaxurl + '?action=jet_ai_search_dispatch',
+			url: this.ajaxURL(),
 			data: {
 				dispatch: 'data.dispatch_fetch',
+				nonce: window.JetAISearchData.nonce,
 				post_type: this.state.fetch_post_type,
 				api_key: this.state.api_key,
 				chunk: chunk,
@@ -76,6 +95,8 @@ class App extends Component {
 
 			if ( ! response.success ) {
 				this.setState( { fetching: false } );
+				alert( response.data );
+				return;
 			}
 
 			this.setState( { 
@@ -87,6 +108,10 @@ class App extends Component {
 				this.fetchChunk( chunk + 1 );
 			} else {
 				this.setState( { fetching: false } );
+				this.setState( { 
+					done: 0,
+					total: 0 
+				} );
 			}
 		} ).catch( ( error ) => {
 			this.setState( { fetching: false } );

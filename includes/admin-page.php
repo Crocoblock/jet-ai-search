@@ -72,6 +72,7 @@ class Admin_Page {
 
 		wp_localize_script( 'jet-ai-search', 'JetAISearchData', [
 			'settings'   => Plugin::instance()->settings->get(),
+			'nonce'      => Plugin::instance()->dispatcher->create_nonce(),
 			'stats'      => Plugin::instance()->data->get_stats(),
 			'post_types' => Plugin::instance()->data->get_fetchable_post_types(),
 		] );

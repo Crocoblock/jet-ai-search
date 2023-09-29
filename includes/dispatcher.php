@@ -12,6 +12,7 @@ if ( ! defined( 'WPINC' ) ) {
 class Dispatcher {
 
 	public $result = '';
+	public $nonce_action = 'jet-ai-search';
 
 	public function __construct() {
 		
@@ -23,8 +24,13 @@ class Dispatcher {
 
 	}
 
+	public function create_nonce() {
+		return wp_create_nonce( $this->nonce_action );
+	}
+
 	public function verify_nonce() {
-		return true;
+		$nonce = ! empty( $_GET['nonce'] ) ? $_GET['nonce'] : false;
+		return ( $nonce && wp_verify_nonce( $nonce, $this->nonce_action ) ) ? true : false;
 	}
 
 	public function dispatch_action( $action = '' ) {
@@ -117,7 +123,6 @@ class Dispatcher {
 			$query_embedding = $query_result['data'][0]['embedding'];
 		}
 		
-		timer_start();
 		for ( $i = 0; $i < count( $embeddings ); $i++ ) {
 
 			$similarity = $this->similarity( json_decode( $embeddings[ $i ]->embedding ), $query_embedding );
@@ -132,8 +137,6 @@ class Dispatcher {
 
 		}
 		
-		var_dump(timer_stop( 0, 10 ));
-
 		usort( $search_results, function ( $a, $b ) {
 			return $a['similarity'] <=> $b['similarity'];
 		} );

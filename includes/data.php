@@ -77,14 +77,46 @@ class Data {
 		setup_postdata( $post );
 		$post_content = apply_filters( 'the_content', $post->post_content );
 		Plugin::instance()->db->delete( [ 'post_id' => $post->ID ] );
-		
-		return $post_parser->get_post_fragments( 
+
+		$all_fragmets = array_merge( $post_parser->get_post_fragments( 
 			$post->ID, 
 			$post->post_title, 
 			$post->guid,
 			$post_content,
 			$post->post_type,
-		);
+		), $post_parser->get_post_fragments( 
+			$post->ID, 
+			$post->post_title, 
+			$post->guid,
+			$post->post_excerpt,
+			$post->post_type,
+		) );
+
+		// Last attempt to get something
+		if ( empty( $all_fragmets ) ) {
+			$post_parser->set_stack_defaults( [
+				'post_id'    => $post->ID,
+				'post_url'   => $post->guid,
+				'post_title' => $post->post_title,
+				'source'     => $post->post_type,
+			] );
+			
+			$title    = $post_parser->prepare_heading( $post->post_title );
+			$fragment = $post_parser->prepare_fragment( $post_content );
+
+			$post_parser->stack_result( [
+				'fragment' => $title . $fragment
+			], true );
+
+			$all_fragmets = $post_parser->get_result();
+		}
+
+		wp_reset_postdata();
+
+		/**
+		 * Filter 'jet-ai-search/post-fragments' allows to add custom fragments related to the given post.
+		 */
+		return apply_filters( 'jet-ai-search/post-fragments', $all_fragmets, $post, $post_parser );
 
 	}
 
@@ -146,7 +178,9 @@ class Data {
 		$done = $per_chunk * ( $chunk - 1 );
 
 		foreach ( $posts as $post ) {
-			$embeddings = array_merge( $embeddings, $this->fetch_post( $post ) );
+			
+			$post_fragments = $this->fetch_post( $post );
+			$embeddings = array_merge( $embeddings, $post_fragments );
 			$done++;
 		}
 
