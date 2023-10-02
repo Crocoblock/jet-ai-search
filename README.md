@@ -1,6 +1,6 @@
 # AI Search experiment
 
-Experimental plugin for AI-driven search by Crocoblock
+Experimental plugin for AI-driven search by Crocoblock. This plugin is literally AI search for your website. Allows parse you website content by Open AI and than search over parsed content also using Open AI possibilities. Returns a lot more better results than default WordPress search. One more advantage over deafult search - spelling insensetivity.
 
 ## Quick Start
 
