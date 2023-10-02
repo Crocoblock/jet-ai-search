@@ -23,3 +23,52 @@ Fetch some starting content, because plugin will work only with own fetched frag
 __Step 4__
 
 Enable required post types for auto-fetch. Auto fetch is required to plugin automatically update fragmnets when you create/update/delete posts of selected post type.
+
+## Advanced Usage
+
+### Allow to search by custom field values
+
+Next code snippet allow you to add value from meta field to parsed content fragments. Using this you can run AI search by selected custom field values, not only posts content/excerpt.
+
+```php
+add_filter( 'jet-ai-search/post-fragments', function( $fragments, $post, $parser ) {
+
+	// Optional part - making sure we work with posts of need type
+	if ( 'product' !== $post->post_type ) {
+		return $fragments;
+	}
+
+	// Getting field value
+	$field_name = 'description-for-the-search';
+	$custom_description = get_post_meta( $post->ID, $field_name, true );
+
+	// If value is empty - nothing to do here
+	if ( ! $custom_description ) {
+		return $fragments;
+	}
+
+	// Reset previously parsed stack and store new fragment
+	$parser->reset_results();
+
+	$parser->set_stack_defaults( [
+		'post_id'    => $post->ID,
+		'post_url'   => $post->guid,
+		'post_title' => $post->post_title,
+		'source'     => $post->post_type,
+	] );
+
+	$title    = $parser->prepare_heading( $post->post_title );
+	$fragment = $parser->prepare_fragment( $custom_description );
+
+	$parser->stack_result( [
+		'fragment' => $title . $fragment
+	], true );
+
+	// Merge stored fragment with all previous fragmnets
+	$fragments = array_merge( $fragments, $parser->get_result() );
+
+	return $fragments;
+	
+}, 10, 3 );
+```
+After adding this code, you need to re-fetch content of required post type to make sure new fragments stored in DB. 
