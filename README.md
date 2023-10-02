@@ -57,7 +57,9 @@ add_filter( 'jet-ai-search/post-fragments', function( $fragments, $post, $parser
 		'source'     => $post->post_type,
 	] );
 
-	$title    = $parser->prepare_heading( $post->post_title );
+	// Optional - store post title with field value for better context
+	$title = $parser->prepare_heading( $post->post_title );
+
 	$fragment = $parser->prepare_fragment( $custom_description );
 
 	$parser->stack_result( [
