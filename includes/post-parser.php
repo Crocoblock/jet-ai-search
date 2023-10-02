@@ -29,6 +29,10 @@ class Post_Parser {
 		}
 	}
 
+	public function reset_results() {
+		$this->result = [];
+	}
+
 	/**
 	 * Parse gieven piece of content
 	 * 

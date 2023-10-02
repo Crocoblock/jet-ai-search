@@ -94,6 +94,7 @@ class Data {
 
 		// Last attempt to get something
 		if ( empty( $all_fragmets ) ) {
+			
 			$post_parser->set_stack_defaults( [
 				'post_id'    => $post->ID,
 				'post_url'   => $post->guid,
@@ -111,12 +112,14 @@ class Data {
 			$all_fragmets = $post_parser->get_result();
 		}
 
-		wp_reset_postdata();
-
 		/**
 		 * Filter 'jet-ai-search/post-fragments' allows to add custom fragments related to the given post.
 		 */
-		return apply_filters( 'jet-ai-search/post-fragments', $all_fragmets, $post, $post_parser );
+		$all_fragmets = apply_filters( 'jet-ai-search/post-fragments', $all_fragmets, $post, $post_parser );
+
+		wp_reset_postdata();
+
+		return $all_fragmets;
 
 	}
 
