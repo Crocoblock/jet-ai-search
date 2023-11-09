@@ -85,17 +85,23 @@ class Dispatcher {
 			wp_send_json_error( 'Error!' );
 		}
 
-		$embeddings_manager = new Embeddings();
+		try {
 
-		$url = ! empty( $_GET['url'] ) ? $_GET['url'] : false;
+			$embeddings_manager = new Embeddings();
 
-		if ( $url ) {
-			$embeddings_manager->fetch( [
-				'remote' => [ $url ],
-			] );
+			$url = ! empty( $_GET['url'] ) ? $_GET['url'] : false;
+
+			if ( $url ) {
+				$embeddings_manager->fetch( [
+					'remote' => [ $url ],
+				] );
+			}
+
+			wp_send_json_success( [ 'done' => $embeddings_manager->inserted_fragments ] );
+
+		} catch ( \Exception $e ) {
+			wp_send_json_error( $e->getMessage() );
 		}
-
-		wp_send_json_success( [ 'done' => $embeddings_manager->inserted_fragments ] );
 
 	}
 

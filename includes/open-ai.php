@@ -18,6 +18,8 @@ class Open_AI {
 	private $url;
 	private $api_key;
 
+	private $error = false;
+
 	public function __construct( $api_key ) {
 		$this->url         = 'https://api.openai.com/v1/';
 		$this->api_key     = $api_key;
@@ -51,7 +53,13 @@ class Open_AI {
 			$this->prepare_body( $data, $headers, $method )
 		);
 
-		return json_decode( wp_remote_retrieve_body( $response ), true );
+		$result = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! empty( $result['error'] ) && ! empty( $result['error']['message'] ) ) {
+			$this->error = $result['error']['message'];
+		}
+
+		return $result;
 	}
 
 	public function get() {
@@ -69,6 +77,10 @@ class Open_AI {
 
 			if ( ! $response ) {
 				$this->error = 'Internal error. Please try again later.';
+			}
+
+			if ( ! empty( $response_data['error'] ) && ! empty( $response_data['error']['message'] ) ) {
+				$this->error = $response_data['error']['message'];
 			}
 
 			return $response;

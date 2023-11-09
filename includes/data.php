@@ -136,6 +136,12 @@ class Data {
 			}, $embeddings ),
 		] ) );
 
+		$error = $open_ai->get_error();
+
+		if ( $error ) {
+			throw new \Exception( 'Open AI API Error: ' . $error );
+		}
+
 		if ( ! empty( $result['data'] ) ) {
 			foreach ( $result['data'] as $index => $item ) {
 				$result_embeddings[] = $item['embedding'];
@@ -156,44 +162,48 @@ class Data {
 			wp_send_json_error( 'Access denied' );
 		}
 
-		$chunk = $request['chunk'];
-		$per_chunk = 10;
-		$counts = $this->count_posts( $request['post_type'] );
+		try {
+			$chunk = $request['chunk'];
+			$per_chunk = 10;
+			$counts = $this->count_posts( $request['post_type'] );
 
-		if ( ! $counts->publish ) {
-			wp_send_json_success( [
-				'done' => 0,
-				'total' => 0,
-				'has_next' => false,
+			if ( ! $counts->publish ) {
+				wp_send_json_success( [
+					'done' => 0,
+					'total' => 0,
+					'has_next' => false,
+				] );
+			}
+
+			$chunks = ceil( $counts->publish / $per_chunk );
+			$posts  = get_posts( [
+				'post_type'      => $request['post_type'],
+				'post_status'    => 'publish',
+				'has_password'   => false,
+				'offset'         => $per_chunk * ( $chunk - 1 ),
+				'posts_per_page' => $per_chunk,
 			] );
+
+			$embeddings = [];
+			$done = $per_chunk * ( $chunk - 1 );
+
+			foreach ( $posts as $post ) {
+				
+				$post_fragments = $this->fetch_post( $post );
+				$embeddings = array_merge( $embeddings, $post_fragments );
+				$done++;
+			}
+
+			$this->write_embeddings( $embeddings );
+
+			wp_send_json_success( [
+				'done'     => $done,
+				'total'    => $counts->publish,
+				'has_next' => ( $chunk < $chunks ? true : false ),
+			] );
+		} catch ( \Exception $e ) {
+			wp_send_json_error( $e->getMessage() );
 		}
-
-		$chunks = ceil( $counts->publish / $per_chunk );
-		$posts  = get_posts( [
-			'post_type'      => $request['post_type'],
-			'post_status'    => 'publish',
-			'has_password'   => false,
-			'offset'         => $per_chunk * ( $chunk - 1 ),
-			'posts_per_page' => $per_chunk,
-		] );
-
-		$embeddings = [];
-		$done = $per_chunk * ( $chunk - 1 );
-
-		foreach ( $posts as $post ) {
-			
-			$post_fragments = $this->fetch_post( $post );
-			$embeddings = array_merge( $embeddings, $post_fragments );
-			$done++;
-		}
-
-		$this->write_embeddings( $embeddings );
-
-		wp_send_json_success( [
-			'done'     => $done,
-			'total'    => $counts->publish,
-			'has_next' => ( $chunk < $chunks ? true : false ),
-		] );
 
 	}
 
