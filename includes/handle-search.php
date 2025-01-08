@@ -22,7 +22,7 @@ class Handle_Search {
 	}
 
 	public function handle_search( $query ) {
-		
+
 		if ( ! $query->is_search() ) {
 			return;
 		}
@@ -57,80 +57,16 @@ class Handle_Search {
 
 	public function get_results( $search = '', $sources = false ) {
 
-		if ( ! Plugin::instance()->settings->get( 'api_key' ) ) {
-			return false;
-		}
-
 		if ( ! $search ) {
 			return false;
 		}
-		
-		$table = Plugin::instance()->db->table();
-		$where = '';
 
-		if ( ! empty( $sources ) ) {
-			$sources_str = [];
-			foreach ( $sources as $source ) {
-				$sources_str[] = "'$source'";
-			}
-
-			$sources_str = implode( ', ', $sources_str );
-
-			$where .= "WHERE `source` IN ($sources_str)";
-
-		}
-
-		$embeddings = Plugin::instance()->db->wpdb()->get_results( 
-			"SELECT ID, post_id, embedding FROM $table $where"
-		);
-
-		$open_ai = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
-
-		$query_result = $open_ai->request( 'embeddings', json_encode( [
-			'model' => 'text-embedding-ada-002',
-			'input' => $search,
-		] ) );
-
-		if ( empty( $query_result['data'] ) ) {
-			return false;
-		}
-
-		$query_embedding = $query_result['data'][0]['embedding'];
-		$search_results  = [];
-		$strictness      = floatval( Plugin::instance()->settings->get( 'strictness' ) );
-
-		for ( $i = 0; $i < count( $embeddings ); $i++ ) {
-
-			$similarity = $this->similarity( json_decode( $embeddings[ $i ]->embedding ), $query_embedding );
-
-			if ( $strictness > $similarity ) {
-				// store the simliarty and index in an array and sort by the similarity
-				$search_results[] = [
-					'similarity' => $similarity,
-					'index' => $i,
-				];
-			}
-
-		}
-
-		usort( $search_results, function ( $a, $b ) {
-			return $a['similarity'] <=> $b['similarity'];
-		} );
-
-		$result_ids = [];
-		$limit      = Plugin::instance()->settings->get( 'limit' );
+		$search_results = Plugin::instance()->dispatcher->search_by_embeddings( $search );
+		$result_ids     = [];
+		$limit          = Plugin::instance()->settings->get( 'limit' );
 
 		for ( $i = 0; $i < count( $search_results ); $i++ ) {
-
-			$item = $embeddings[ $search_results[ $i ]['index'] ];
-
-			if ( ! in_array( $item->post_id, $result_ids ) ) {
-				$result_ids[] = $item->post_id;
-			}
-
-			if ( $limit === count( $result_ids ) ) {
-				break;
-			}
+			$result_ids[] = $search_results[ $i ]['post_id'];
 		}
 
 		return $result_ids;

@@ -80,7 +80,7 @@ class Data {
 
 		$all_fragmets = array_merge( $post_parser->get_post_fragments( 
 			$post->ID, 
-			$post->post_title, 
+			$post->post_title,
 			$post->guid,
 			$post_content,
 			$post->post_type,
@@ -101,7 +101,7 @@ class Data {
 				'post_title' => $post->post_title,
 				'source'     => $post->post_type,
 			] );
-			
+
 			$title    = $post_parser->prepare_heading( $post->post_title );
 			$fragment = $post_parser->prepare_fragment( $post_content );
 
@@ -124,7 +124,15 @@ class Data {
 	}
 
 	public function write_embeddings( $embeddings = [] ) {
-		
+
+		foreach ( $embeddings as $embedding ) {
+			Plugin::instance()->storage->insert( $embedding );
+		}
+
+		Plugin::instance()->storage->write();
+
+		return;
+
 		Plugin::instance()->db->create_table();
 
 		$open_ai = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
@@ -146,10 +154,11 @@ class Data {
 			foreach ( $result['data'] as $index => $item ) {
 				$result_embeddings[] = $item['embedding'];
 				$embeddings[ $index ]['embedding'] = json_encode( $item['embedding'] );
-				Plugin::instance()->db->insert( $embeddings[ $index ] );
+				Plugin::instance()->storage->insert( $embeddings[ $index ] );
 			}
 		}
 
+		Plugin::instance()->storage->write();
 	}
 
 	public function dispatch_fetch( $request, $dispatcher ) {
@@ -164,7 +173,7 @@ class Data {
 
 		try {
 			$chunk = $request['chunk'];
-			$per_chunk = 10;
+			$per_chunk = 15;
 			$counts = $this->count_posts( $request['post_type'] );
 
 			if ( ! $counts->publish ) {
@@ -188,7 +197,6 @@ class Data {
 			$done = $per_chunk * ( $chunk - 1 );
 
 			foreach ( $posts as $post ) {
-				
 				$post_fragments = $this->fetch_post( $post );
 				$embeddings = array_merge( $embeddings, $post_fragments );
 				$done++;
@@ -200,6 +208,7 @@ class Data {
 				'done'     => $done,
 				'total'    => $counts->publish,
 				'has_next' => ( $chunk < $chunks ? true : false ),
+				'response' => Plugin::instance()->storage->get_last_response()
 			] );
 		} catch ( \Exception $e ) {
 			wp_send_json_error( $e->getMessage() );

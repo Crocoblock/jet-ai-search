@@ -75,8 +75,8 @@ class Admin_Page {
 			'nonce'      => Plugin::instance()->dispatcher->create_nonce(),
 			'stats'      => Plugin::instance()->data->get_stats(),
 			'post_types' => Plugin::instance()->data->get_fetchable_post_types(),
+			'home_url'   => home_url( '/' ),
 		] );
-
 	}
 
 	/**

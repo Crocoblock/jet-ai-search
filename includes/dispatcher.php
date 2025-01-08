@@ -113,10 +113,9 @@ class Dispatcher {
 			return $search_results;
 		}
 
-		$embeddings_manager = new Embeddings();
-		$embeddings         = $embeddings_manager->get();
+		return Plugin::instance()->storage->get_match( $search_query );
 
-		$open_ai = new Open_AI();
+		$open_ai = new Open_AI( Plugin::instance()->settings->get( 'api_key' ) );
 
 		$query_embedding = [];
 
@@ -128,7 +127,9 @@ class Dispatcher {
 		if ( ! empty( $query_result['data'] ) ) {
 			$query_embedding = $query_result['data'][0]['embedding'];
 		}
-		
+
+		return Plugin::instance()->storage->get_match( $query_embedding );
+
 		for ( $i = 0; $i < count( $embeddings ); $i++ ) {
 
 			$similarity = $this->similarity( json_decode( $embeddings[ $i ]->embedding ), $query_embedding );

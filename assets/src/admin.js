@@ -24,7 +24,14 @@ class App extends Component {
 	constructor( props ) {
 
 		super( props );
-		this.state = { fetch_post_type: 'post', done: 0, total: 0, ...this.props.data };
+		this.state = {
+			fetch_post_type: 'post',
+			done: 0,
+			total: 0,
+			activating_license: false,
+			saving: false,
+			...this.props.data
+		};
 
 	}
 
@@ -144,7 +151,7 @@ class App extends Component {
 	}
 
 	swithAutoFetch( postType ) {
-		
+
 		postType = postType || false;
 		const newAutoFetch = [ ...this.state.auto_fetch ];
 		const postTypes = [];
@@ -180,13 +187,112 @@ class App extends Component {
 		}
 	}
 
+	activateLicense() {
+
+		this.setState( { activating_license: true } );
+
+		wp.apiFetch( {
+			method: 'POST',
+			url: this.ajaxURL(),
+			data: {
+				dispatch: 'settings.dispatch_license_activation',
+				settings: {
+					license: this.state.license_key,
+				},
+			},
+		} ).then( ( response ) => {
+
+			if ( response.success ) {
+				this.setState( {
+					activating_license: false,
+					license_token: response.data.token
+				} );
+			} else {
+				alert( response.data );
+			}
+
+			this.setState( { activating_license: false } );
+		} ).catch( ( error ) => {
+			alert( error );
+			this.setState( { activating_license: false } );
+		} );
+
+	}
+
+	deactivateLicense() {
+
+		this.setState( { activating_license: true } );
+
+		wp.apiFetch( {
+			method: 'POST',
+			url: this.ajaxURL(),
+			data: {
+				dispatch: 'settings.dispatch_license_deactivation',
+				settings: {
+					license: this.state.license_token,
+				},
+			},
+		} ).then( ( response ) => {
+
+			if ( response.success ) {
+				this.setState( {
+					activating_license: false,
+					license_token: ''
+				} );
+			} else {
+				alert( response.data );
+			}
+
+			this.setState( { activating_license: false } );
+		} ).catch( ( error ) => {
+			alert( error );
+			this.setState( { activating_license: false } );
+		} );
+
+	}
+
 	render() {
 
 		return ( <div
 			className="jet-ai-search"
 			style={ { padding: "20px 20px 20px 0" } }
 		>
-			<Card 
+			<Card
+				style={ { margin: "0 0 20px" } }
+			>
+				<CardHeader>
+					<Heading level={ 3 }>License</Heading>
+				</CardHeader>
+				<CardBody>
+					{ ! this.state.license_token && <TextControl
+						label="AI Search License Key"
+						type="password"
+						value={ this.state.license_key }
+						help="Activate your AI search license to use the plugin"
+						onChange={ ( value ) => {
+							this.setState( { license_key: value } );
+						} }
+					/> }
+					{ this.state.license_token && <div>
+						License activated
+					</div> }
+				</CardBody>
+				<CardFooter>
+					{ ! this.state.license_token && <Button
+						variant="primary"
+						onClick={ () => { this.activateLicense() } }
+						disabled={ ! this.state.license_key || this.state.activating_license }
+						isBusy={ this.state.activating_license }
+					>Activate License</Button> }
+					{ this.state.license_token && <Button
+						variant="primary"
+						onClick={ () => { this.deactivateLicense() } }
+						disabled={ this.state.activating_license }
+						isBusy={ this.state.activating_license }
+					>Deactivate License</Button> }
+				</CardFooter>
+			</Card>
+			{ this.state.license_token && <Card
 				style={ { margin: "0 0 20px" } }
 			>
 				<CardHeader>
@@ -254,8 +360,8 @@ class App extends Component {
 						disabled={ this.state.saving }
 					>{ this.saveButtonLabel() }</Button>
 				</CardFooter>
-			</Card>
-			<Flex
+			</Card> }
+			{ this.state.license_token && <Flex
 				gap="20px"
 				align="stretch"
 			>
@@ -345,7 +451,7 @@ class App extends Component {
 						</CardFooter>
 					</Card>
 				</FlexBlock>
-			</Flex>
+			</Flex> }
 		</div> );
 	}
 

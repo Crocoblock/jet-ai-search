@@ -33,6 +33,7 @@ class Plugin {
 	public $db;
 	public $dispatcher;
 	public $search_handler;
+	public $storage;
 
 	/**
 	 * Plugin constructor.
@@ -47,12 +48,34 @@ class Plugin {
 		$this->data           = new Data();
 		$this->dispatcher     = new Dispatcher();
 		$this->search_handler = new Handle_Search();
+		$this->storage        = new Proxy_Storage();
+
+		$this->storage->set_storage( new Remote_Storage() );
 
 		$this->admin_page->register();
 
 		add_action( 'init', function() {
 			new Auto_Fetch( $this->settings->get( 'auto_fetch' ) );
 		} );
+
+		add_action( 'init', function() {
+
+			if ( ! empty( $_GET['test_fetch_post'] ) ) {
+				$post_id        = absint( $_GET['test_fetch_post'] );
+				$post_fragments = $this->data->fetch_post( get_post( $post_id ) );
+				$this->data->write_embeddings( $post_fragments );
+				var_dump( $this->storage->get_last_response() );
+				die();
+			}
+
+			if ( ! empty( $_GET['test_ai_search'] ) ) {
+				timer_start();
+				var_dump( $this->dispatcher->search_by_embeddings( $_GET['test_ai_search'] ) );
+				var_dump( timer_stop(0, 10) );
+				die();
+			}
+
+		}, 99 );
 
 	}
 
